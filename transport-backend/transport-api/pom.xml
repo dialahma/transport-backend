@@ -20,7 +20,7 @@
     </dependency>
     <dependency>
       <groupId>net.adipappi.transport</groupId>
-      <artifactId>transport-service</artifactId>
+      <artifactId>transport-security</artifactId>
       <version>1.0.0</version>
     </dependency>
     <!-- Springdoc OpenAPI pour Swagger UI -->

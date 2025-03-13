@@ -22,7 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with login: " + login));
 
         // Rôle par défaut
-        String role = "ROLE_USER";
+        String role = "USER";
 
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getLogin()) // Utilisez le champ "login"

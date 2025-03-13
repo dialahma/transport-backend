@@ -47,7 +47,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      
         <!-- Lombok (optionnel) -->
         <dependency>
             <groupId>org.projectlombok</groupId>

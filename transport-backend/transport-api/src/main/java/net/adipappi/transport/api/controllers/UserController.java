@@ -2,6 +2,7 @@ package net.adipappi.transport.api.controllers;
 
 import net.adipappi.transport.common.dtos.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import net.adipappi.transport.service.UserService;
 
@@ -15,6 +16,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
+    @PreAuthorize("hasRole('USER')") // Seuls les utilisateurs avec le rôle USER peuvent accéder
     public List<UserDTO> getAllUsers() {
         return userService.getAllUsers();
     }
