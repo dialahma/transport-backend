@@ -35,6 +35,7 @@
   <properties>
     <java.version>17</java.version>
     <spring.boot.version>3.4.3</spring.boot.version>
+    <junit-jupiter.version>5.10.0</junit-jupiter.version>
   </properties>
 
   <dependencyManagement>
@@ -46,10 +47,31 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      
+        <!-- Lombok (optionnel) -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+      <!-- Jakarta Servlet API -->
+      <dependency>
+        <groupId>jakarta.servlet</groupId>
+        <artifactId>jakarta.servlet-api</artifactId>
+        <version>6.0.0</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <!-- Tests -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter</artifactId>
-        <version>5.10.0</version>
+        <version>${junit-jupiter.version}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
