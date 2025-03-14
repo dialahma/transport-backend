@@ -1,12 +1,10 @@
-package net.adipappi.transport.config.config;
+package net.adipappi.transport.config.data;
 
 import jakarta.annotation.PostConstruct;
 import net.adipappi.transport.dao.entity.User;
 import net.adipappi.transport.dao.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;

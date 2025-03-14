@@ -31,7 +31,15 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
+                        // Autoriser l'accès à Swagger UI sans authentification
+                        .requestMatchers(
+                                "/swagger-ui/**",       // Swagger UI
+                                "/v3/api-docs/**",     // Documentation OpenAPI
+                                "/swagger-resources/**", // Ressources Swagger
+                                "/webjars/**"          // WebJars pour Swagger UI
+                        ).permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/users").authenticated() // Autoriser l'accès à /api/users pour les utilisateurs authentifiés
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
