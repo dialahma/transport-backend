@@ -1,6 +1,7 @@
 package net.adipappi.transport.security.config;
 
 import net.adipappi.transport.security.filter.JwtAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,28 +19,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-    }
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        System.out.println("Configuration de sécurité appliquée !"); // Log pour vérifier que la configuration est chargée
-
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        // Autoriser l'accès à Swagger UI sans authentification
-                        .requestMatchers(
-                                "/swagger-ui/**",       // Swagger UI
-                                "/v3/api-docs/**",     // Documentation OpenAPI
-                                "/swagger-resources/**", // Ressources Swagger
-                                "/webjars/**"          // WebJars pour Swagger UI
-                        ).permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/users/**").permitAll()// Autoriser l'accès à /api/users pour les utilisateurs authentifiés
+                        .requestMatchers("/api/users/**").permitAll()
+                        .requestMatchers("/api/geolocation/**").permitAll() // Ajoutez cette ligne
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // Swagger
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
@@ -49,6 +40,7 @@ public class SecurityConfig {
 
         return http.build();
     }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
@@ -59,3 +51,4 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder(); // Utilise BCrypt pour le hachage des mots de passe
     }
 }
+
