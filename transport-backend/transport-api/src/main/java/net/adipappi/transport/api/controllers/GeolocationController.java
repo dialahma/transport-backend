@@ -3,6 +3,7 @@ package net.adipappi.transport.api.controllers;
 
 import net.adipappi.transport.service.GeolocationService;
 import net.adipappi.transport.service.RouteService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +16,10 @@ public class GeolocationController {
     private final RestTemplate restTemplate = new RestTemplate();
     @Autowired
     private GeolocationService geolocationService;
+
     @Autowired
     private RouteService routeService;
+
     // Endpoint pour le géocodage (adresse → coordonnées)
     @GetMapping("/geocode")
     public ResponseEntity<String> geocode(@RequestParam String address) {
@@ -27,7 +30,9 @@ public class GeolocationController {
     // Endpoint pour le géocodage inverse (coordonnées → adresse)
     @GetMapping("/reverse-geocode")
     public ResponseEntity<String> reverseGeocode(@RequestParam double lat, @RequestParam double lon) {
+
         String result = geolocationService.reverseGeoCode(lat, lon);
+
         return ResponseEntity.ok(result);
     }
 
