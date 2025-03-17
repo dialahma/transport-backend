@@ -14,6 +14,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>net.adipappi.transport</groupId>
+      <artifactId>transport-api</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>

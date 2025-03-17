@@ -3,3 +3,4 @@ net/adipappi/transport/api/controllers/AuthController.class
 net/adipappi/transport/api/controllers/UserController.class
 net/adipappi/transport/api/config/SwaggerConfig.class
 net/adipappi/transport/api/controllers/AuthRequest.class
+net/adipappi/transport/api/controllers/GeolocationController.class

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Carte OSM avec Leaflet</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        #map { height: 600px; }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+    // Initialisation de la carte
+    const map = L.map('map').setView([48.8566, 2.3522], 13); // Paris comme centre initial
+
+    // Ajout de la couche OSM
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Exemple d'appel au backend Spring Boot pour le géocodage
+    async function geocodeAddress(address) {
+        const response = await fetch(`http://localhost:8080/api/geolocation/geocode?address=${encodeURIComponent(address)}`);
+        const data = await response.json();
+        if (data.length > 0) {
+            const { lat, lon } = data[0];
+            L.marker([lat, lon]).addTo(map).bindPopup(address).openPopup();
+        }
+    }
+
+    // Exemple d'appel au backend Spring Boot pour le calcul d'itinéraire
+    async function calculateRoute(start, end) {
+        const response = await fetch(
+            `http://localhost:8085/api/geolocation/route?startLat=${start.lat}&startLon=${start.lon}&endLat=${end.lat}&endLon=${end.lon}`
+        );
+        const data = await response.json();
+        const coordinates = data.routes[0].geometry.coordinates;
+        L.polyline(coordinates, { color: 'blue' }).addTo(map);
+    }
+
+    // Test des fonctions
+    geocodeAddress("Paris");
+    calculateRoute({ lat: 48.8566, lon: 2.3522 }, { lat: 48.8584, lon: 2.2945 });
+</script>
+</body>
+</html>

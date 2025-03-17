@@ -24,3 +24,8 @@ spring:
     init:
       mode: always  # Force l'exécution des scripts SQL
       platform: h2  # Spécifie la plateforme de base de données
+# application.yml
+geolocation:
+  api:
+    # key: YOUR_API_KEY
+    url: https://nominatim.openstreetmap.org

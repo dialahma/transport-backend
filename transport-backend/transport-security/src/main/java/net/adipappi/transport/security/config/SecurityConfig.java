@@ -40,6 +40,7 @@ public class SecurityConfig {
                         ).permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/users/**").permitAll()// Autoriser l'accès à /api/users pour les utilisateurs authentifiés
+                        .requestMatchers("/api/geolocation/**").permitAll() // Autoriser l'accès à /api/geolocation
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

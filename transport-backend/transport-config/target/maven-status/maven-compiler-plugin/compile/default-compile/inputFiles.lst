@@ -1,1 +1,2 @@
-/app/workspace/java/transport/transport-backend/transport-config/src/main/java/net/adipappi/transport/config/config/DataInitializer.java
+/app/workspace/java/transport/transport-backend/transport-config/src/main/java/net/adipappi/transport/config/data/DataInitializer.java
+/app/workspace/java/transport/transport-backend/transport-config/src/main/java/net/adipappi/transport/config/cors/CorsConfig.java
