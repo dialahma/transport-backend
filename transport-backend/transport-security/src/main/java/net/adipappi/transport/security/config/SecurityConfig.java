@@ -39,7 +39,7 @@ public class SecurityConfig {
                                 "/webjars/**"          // WebJars pour Swagger UI
                         ).permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/users").authenticated() // Autoriser l'accès à /api/users pour les utilisateurs authentifiés
+                        .requestMatchers("/api/users/**").permitAll()// Autoriser l'accès à /api/users pour les utilisateurs authentifiés
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
