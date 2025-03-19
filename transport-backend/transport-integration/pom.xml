@@ -13,10 +13,6 @@
   <artifactId>transport-integration</artifactId>
 
   <dependencies>
-    <!-- <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-security</artifactId>
-    </dependency>-->
     <dependency>
       <groupId>net.adipappi.transport</groupId>
       <artifactId>transport-api</artifactId>
@@ -25,11 +21,6 @@
     <dependency>
       <groupId>net.adipappi.transport</groupId>
       <artifactId>transport-security</artifactId>
-      <version>1.0.0</version>
-    </dependency>
-    <dependency>
-      <groupId>net.adipappi.transport</groupId>
-      <artifactId>transport-api</artifactId>
       <version>1.0.0</version>
     </dependency>
     <dependency>
