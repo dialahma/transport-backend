@@ -1,4 +1,4 @@
-package net.adipappi.transport.api.controllers;
+package net.adipappi.transport.api.controllers.auth;
 
 import net.adipappi.transport.security.util.JwtUtil;
 import net.adipappi.transport.security.service.UserDetailsServiceImpl;

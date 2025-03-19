@@ -1,4 +1,4 @@
-package net.adipappi.transport.service;
+package net.adipappi.transport.service.user;
 
 import net.adipappi.transport.common.dtos.UserDTO;
 import net.adipappi.transport.dao.entity.User;

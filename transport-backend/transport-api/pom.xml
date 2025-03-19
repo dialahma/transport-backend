@@ -20,6 +20,11 @@
     </dependency>
     <dependency>
       <groupId>net.adipappi.transport</groupId>
+      <artifactId>transport-service</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>net.adipappi.transport</groupId>
       <artifactId>transport-security</artifactId>
       <version>1.0.0</version>
     </dependency>

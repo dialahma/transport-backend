@@ -1,4 +1,4 @@
-package net.adipappi.transport.api.controllers;
+package net.adipappi.transport.api.controllers.auth;
 
 public class AuthRequest {
     private String login;

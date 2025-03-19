@@ -1,8 +1,8 @@
-package net.adipappi.transport.api.controllers;
+package net.adipappi.transport.api.controllers.geolocation;
 
 
-import net.adipappi.transport.service.GeolocationService;
-import net.adipappi.transport.service.RouteService;
+import net.adipappi.transport.service.geolocation.GeolocationService;
+import net.adipappi.transport.service.geolocation.RouteService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

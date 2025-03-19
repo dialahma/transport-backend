@@ -1,4 +1,4 @@
-package net.adipappi.transport.service;
+package net.adipappi.transport.service.geolocation;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 

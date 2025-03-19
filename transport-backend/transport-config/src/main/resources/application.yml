@@ -49,3 +49,8 @@ spring:
 security:
   enabled: true
 
+video:
+  rtsp:
+    url: "rtsp://wesadmin:PiCaM*_*1187@adipappi.media:8554/picamv21"
+
+    

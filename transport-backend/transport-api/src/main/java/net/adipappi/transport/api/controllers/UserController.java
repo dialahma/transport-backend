@@ -4,7 +4,7 @@ import net.adipappi.transport.common.dtos.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import net.adipappi.transport.service.UserService;
+import net.adipappi.transport.service.user.UserService;
 
 import java.util.List;
 
