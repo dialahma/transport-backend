@@ -2,40 +2,7 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
-      <profile name="Maven default annotation processors profile" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <module name="transport-payment" />
-        <module name="transport-video" />
-        <module name="transport-api" />
-        <module name="transport-notification" />
-        <module name="transport-monitoring" />
-        <module name="transport-security" />
-        <module name="transport-config" />
-        <module name="transport-dao" />
-        <module name="transport-integration" />
-        <module name="transport-service" />
-        <module name="transport-batch" />
-        <module name="transport-common" />
-      </profile>
+      <profile default="true" name="Default" enabled="true" />
     </annotationProcessing>
-  </component>
-  <component name="JavacSettings">
-    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="transport" options="-parameters" />
-      <module name="transport-api" options="-parameters" />
-      <module name="transport-batch" options="-parameters" />
-      <module name="transport-common" options="-parameters" />
-      <module name="transport-config" options="-parameters" />
-      <module name="transport-dao" options="-parameters" />
-      <module name="transport-integration" options="-parameters" />
-      <module name="transport-monitoring" options="-parameters" />
-      <module name="transport-notification" options="-parameters" />
-      <module name="transport-payment" options="-parameters" />
-      <module name="transport-security" options="-parameters" />
-      <module name="transport-service" options="-parameters" />
-      <module name="transport-video" options="-parameters" />
-    </option>
   </component>
 </project>

@@ -1,10 +1,9 @@
 server:
-  port: 8085  # Port du serveur
+  port: 8085
 
 spring:
   profiles:
-    active: dev # Profil actif par défaut
-
+    active: dev
   datasource:
     url: jdbc:h2:mem:testdb
     driver-class-name: org.h2.Driver
@@ -19,18 +18,30 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-    open-in-view: false
-    properties:
-      hibernate:
-        format-sql: true
-  sql:
-    init:
-      mode: always  # Force l'exécution des scripts SQL
-      platform: h2  # Spécifie la plateforme de base de données
+
+logging:
+  level:
+    org.bytedeco: DEBUG
+    net.adipappi.transport.video: TRACE
+opencv:
+  dnn:
+    backend: OPENCV
+    target: CPU
+video:
+  storage:
+    path: ../transport-video/src/main/resources/videos
+    auto-create-dir: true
+  ffmpeg:
+    probesize: 10000000
+    analyzeduration: 5000000
+    timeout: 5
+  rtsp:
+    urls:
+      - "rtsp://wesadmin:PiCaM%2A_%2A1187@adipappi.media:8554/picamv21"
+      - "rtsp://wesadmin:PiCaM%2A_%2A1187@adipappi.media:8564/picamv21"
 
 geolocation:
   api:
-    # key: YOUR_API_KEY
     url: https://nominatim.openstreetmap.org
 
 ---
@@ -38,19 +49,14 @@ spring:
   config:
     activate:
       on-profile: dev
-security:
-  enabled: false # Désactiver la sécurité en développement (optionnel)
 
 ---
 spring:
   config:
     activate:
       on-profile: prod
+logging:
+  level:
+    root: WARN
 security:
   enabled: true
-
-video:
-  rtsp:
-    url: "rtsp://wesadmin:PiCaM*_*1187@adipappi.media:8554/picamv21"
-
-    
