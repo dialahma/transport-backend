@@ -37,8 +37,8 @@ video:
     timeout: 5
   rtsp:
     urls:
-      - "rtsp://wesadmin:PiCaM%2A_%2A1187@adipappi.media:8554/picamv21"
-      - "rtsp://wesadmin:PiCaM%2A_%2A1187@adipappi.media:8564/picamv21"
+      - "rtsp://wesadmin:PiCaM*_*1187@adipappi.media:8554/picamv21"
+      - "rtsp://wesadmin:PiCaM*_*1187@adipappi.media:8564/picamv21"
 
 geolocation:
   api:
