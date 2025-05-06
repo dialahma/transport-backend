@@ -21,4 +21,7 @@ public class VideoService {
         videoStreamService.startStreaming(rtspUrl, streamName);
     }
 
+    public void startHlsStreaming(String rtspUrl, String streamName){
+        videoStreamService.startHlsStreaming(rtspUrl, streamName);
+    }
 }

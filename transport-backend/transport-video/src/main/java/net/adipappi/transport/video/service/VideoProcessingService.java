@@ -47,11 +47,14 @@ public class VideoProcessingService {
     public void processRtspStream(String rtspUrl) {
         try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(rtspUrl)){
              // Java2DFrameConverter converter = new Java2DFrameConverter()) {
+
             // Configuration optimisée RTSP
             grabber.setOption("rtsp_transport", "tcp");
             grabber.setOption("probesize", "20000000");
+            grabber.setOption("stimeout", "5000000"); // 5s timeout
             grabber.setOption("analyzeduration", "10000000");
             grabber.setVideoCodecName("h264");
+            grabber.setVideoOption("threads", "auto");
             grabber.start();
             while (!Thread.interrupted()) {
                 Frame frame = grabber.grab();

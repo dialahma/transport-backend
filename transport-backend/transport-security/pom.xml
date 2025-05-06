@@ -13,11 +13,16 @@
   <artifactId>transport-security</artifactId>
 
   <dependencies>
-  	<dependency>
-  	  <groupId>net.adipappi.transport</groupId>
-  	  <artifactId>transport-service</artifactId>
-  	  <version>1.0.0</version>
-  	</dependency>
+  	  <dependency>
+          <groupId>net.adipappi.transport</groupId>
+  	      <artifactId>transport-service</artifactId>
+  	      <version>1.0.0</version>
+  	  </dependency>
+      <dependency>
+          <groupId>net.adipappi.transport</groupId>
+          <artifactId>transport-config</artifactId>
+          <version>1.0.0</version>
+      </dependency>
       <!-- Spring Security -->
       <dependency>
           <groupId>org.springframework.boot</groupId>

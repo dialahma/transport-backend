@@ -31,6 +31,8 @@ video:
   storage:
     path: ../transport-video/src/main/resources/videos
     auto-create-dir: true
+  hls:
+    output-dir: ../transport-video/target/hls  
   ffmpeg:
     probesize: 10000000
     analyzeduration: 5000000

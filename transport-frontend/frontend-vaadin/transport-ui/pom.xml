@@ -37,6 +37,8 @@
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-spring-boot-starter</artifactId>
+            <!-- Assurez-vous que la version correspond à votre version de Vaadin -->
+            <version>${vaadin.version}</version>
         </dependency>
         
         <dependency>
@@ -54,6 +56,15 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-core</artifactId>
+            <version>${vaadin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-notification-flow</artifactId>
         </dependency>
     </dependencies>
 
