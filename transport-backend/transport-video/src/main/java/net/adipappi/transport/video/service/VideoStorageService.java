@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.logging.Logger;
 
 @Service
 public class VideoStorageService {
@@ -41,7 +42,7 @@ public class VideoStorageService {
         recorder.start();
 
         long startTime = System.currentTimeMillis();
-        while ((System.currentTimeMillis() - startTime) < (durationMinutes * 60 * 1000)) {
+        while ((System.currentTimeMillis() - startTime) < ((long) durationMinutes * 60 * 1000)) {
             Frame frame = grabber.grab();
             if (frame != null) {
                 recorder.record(frame);
@@ -54,6 +55,7 @@ public class VideoStorageService {
     }
 
     private String generateFilePath(String rtspUrl) {
+        Logger.getAnonymousLogger().info("RTSP URL " + rtspUrl);
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
         return OUTPUT_FOLDER + "recording_" + timestamp + ".mp4";
     }

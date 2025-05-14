@@ -13,7 +13,9 @@ public class DetectionService {
     private ObjectDetectionService detectionService;
 
     public String detectionObjects(Mat imageFile){
-        return detectionService.detectObjects(imageFile);
+        Mat annotated = detectionService.detectAndAnnotate(imageFile);
+        // Convertir le Mat annoté en String descriptive si nécessaire
+        return "Détection effectuée - image annotée retournée";
     }
 
 

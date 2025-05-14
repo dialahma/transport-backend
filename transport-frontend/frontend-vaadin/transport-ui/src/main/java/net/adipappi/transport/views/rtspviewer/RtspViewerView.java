@@ -2,7 +2,6 @@ package net.adipappi.transport.views.rtspviewer;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.IFrame;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -17,7 +16,6 @@ import net.adipappi.transport.views.MainLayout;
 @Route(value = "rtsp-viewer", layout = MainLayout.class)
 public class RtspViewerView extends VerticalLayout {
 
-    private final IFrame videoFrame;
     private final TextField rtspUrlField;
     private final TextField streamNameField;
     private final BackendService backendService;
@@ -38,11 +36,6 @@ public class RtspViewerView extends VerticalLayout {
         streamNameField = new TextField("Nom du stream");
         streamNameField.setWidth("80%");
         streamNameField.setValue("stream1");
-
-        videoFrame = new IFrame();
-        videoFrame.setWidth("80%");
-        videoFrame.setHeight("600px");
-        videoFrame.getStyle().set("border", "none");
 
         videoContainer = new Div();
         videoContainer.setWidth("80%");

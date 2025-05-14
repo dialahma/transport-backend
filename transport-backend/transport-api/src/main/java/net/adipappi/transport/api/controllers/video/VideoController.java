@@ -2,7 +2,7 @@ package net.adipappi.transport.api.controllers.video;
 
 import net.adipappi.transport.service.video.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
+
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.CacheControl;
@@ -10,12 +10,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Value;
-import java.io.File;
+
 import java.net.MalformedURLException;
-import java.nio.file.Files;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.concurrent.TimeUnit;
+
 
 @RestController
 @RequestMapping("/api/video")
@@ -24,7 +24,7 @@ public class VideoController {
     @Autowired
     private VideoService videoService;
 
-    @Value("${video.hls.output-dir:/app/workspace/java/transport/transport-backend/transport-video/target/hls}")
+    @Value("${video.hls.output-dir:../transport-video/target/hls}")
     private String hlsOutputDir;
 
     @PostMapping("/start")
@@ -51,7 +51,7 @@ public class VideoController {
 
     @GetMapping(value = "/hls/{filename:.+}")
     public ResponseEntity<Resource> serveHlsFile(@PathVariable String filename) {
-        Path filePath = Paths.get("/app/workspace/java/transport/transport-backend/transport-video/target/hls", filename)
+        Path filePath = Paths.get(hlsOutputDir, filename)
                 .normalize();
 
         try {

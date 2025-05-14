@@ -36,6 +36,7 @@
     <java.version>17</java.version>
     <spring.boot.version>3.4.3</spring.boot.version>
     <junit-jupiter.version>5.10.0</junit-jupiter.version>
+    <jakarta.annotation.version>2.1.1</jakarta.annotation.version>
   </properties>
 
   <dependencyManagement>
@@ -48,19 +49,26 @@
         <scope>import</scope>
       </dependency>
         <!-- Lombok (optionnel) -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
-        </dependency>
-      <!-- Jakarta Servlet API -->
+      <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.30</version> <!-- ou une version récente compatible -->
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Jakarta Servlet API -->
       <dependency>
         <groupId>jakarta.servlet</groupId>
         <artifactId>jakarta.servlet-api</artifactId>
         <version>6.0.0</version>
         <scope>provided</scope>
       </dependency>
-
+      <dependency>
+        <groupId>jakarta.annotation</groupId>
+        <artifactId>jakarta.annotation-api</artifactId>
+        <version>${jakarta.annotation.version}</version>
+        <scope>compile</scope>
+      </dependency>
       <!-- Tests -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

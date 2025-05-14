@@ -27,7 +27,15 @@ opencv:
   dnn:
     backend: OPENCV
     target: CPU
+    yolo:
+      confidence-threshold: 0.5
+      nms-threshold: 0.4
+      vehicle-classes: 2,3,5,7  # IDs COCO pour les véhicules
+      mode: darknet # ou 'dnn' pour utiliser OpenCV DNN
 video:
+  processing:
+    timeout: 10000 # 10s timeout
+    max-retries: 3
   storage:
     path: ../transport-video/src/main/resources/videos
     auto-create-dir: true
@@ -36,8 +44,10 @@ video:
   ffmpeg:
     probesize: 10000000
     analyzeduration: 5000000
-    timeout: 5
+    timeout: 5000
   rtsp:
+    timeout: 5000 # 5s timeout
+    buffer-size: 524288 # 512KB buffer
     urls:
       - "rtsp://wesadmin:PiCaM*_*1187@adipappi.media:8554/picamv21"
       - "rtsp://wesadmin:PiCaM*_*1187@adipappi.media:8564/picamv21"
