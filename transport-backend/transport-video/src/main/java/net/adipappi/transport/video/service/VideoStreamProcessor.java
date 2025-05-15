@@ -13,9 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 @Component
 public class VideoStreamProcessor {
@@ -26,9 +23,6 @@ public class VideoStreamProcessor {
 
     @Autowired
     private ObjectDetectionService detectionService;
-    @Autowired
-    private FrameUtils frameUtils;
-
 
     // Injection par constructeur
     public VideoStreamProcessor(
@@ -41,7 +35,7 @@ public class VideoStreamProcessor {
         FFmpegFrameRecorder recorder = null;
 
         try {
-            // Configure grabber
+            // Configuration du grabber
             grabber.setOption("rtsp_transport", "tcp");
             grabber.setOption("stimeout", "5000000");
             grabber.setOption("analyzeduration", "5000000");
@@ -49,10 +43,12 @@ public class VideoStreamProcessor {
             grabber.setPixelFormat(avutil.AV_PIX_FMT_YUV420P);
             grabber.start();
 
-            // Create output directory
-            Files.createDirectories(Paths.get(outputPath));
+            // Vérification des dimensions vidéo
+            if (grabber.getImageWidth() <= 0 || grabber.getImageHeight() <= 0) {
+                throw new IllegalStateException("Invalid video dimensions");
+            }
 
-            // Initialize recorder
+            // Initialisation du recorder
             String outputFile = outputPath + "/recording_" + System.currentTimeMillis() + ".mp4";
             recorder = new FFmpegFrameRecorder(outputFile,
                     grabber.getImageWidth(), grabber.getImageHeight());
@@ -63,19 +59,26 @@ public class VideoStreamProcessor {
             Frame frame;
             while ((frame = grabber.grab()) != null) {
                 if (frame.image != null) {
-                    Mat mat = frameUtils.frameToMat(frame);
-                    Mat processedMat = detectionService.detectAndAnnotate(mat);
-                    Frame processedFrame = frameUtils.matToFrame(processedMat);
-                    recorder.record(processedFrame);
+                    try {
+                        Mat mat = FrameUtils.frameToMat(frame);
+                        if (!mat.empty()) {
+                            Mat processedMat = detectionService.detectAndAnnotate(mat);
+                            if (!processedMat.empty()) {
+                                Frame processedFrame = FrameUtils.matToFrame(processedMat);
+                                recorder.record(processedFrame);
+                            }
+                        }
+                    } catch (Exception e) {
+                        logger.error("Frame processing error", e);
+                    }
                 }
             }
         } catch (Exception e) {
-            logger.error("Stream processing error for URL: " + rtspUrl, e);
+            logger.error("Stream processing error for URL: {}", rtspUrl, e);
         } finally {
             closeResources(grabber, recorder);
         }
     }
-
     private void configureRecorder(FFmpegFrameRecorder recorder, FFmpegFrameGrabber grabber) {
         recorder.setVideoCodec(avcodec.AV_CODEC_ID_H264);
         recorder.setFormat("mp4");

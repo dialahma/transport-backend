@@ -7,7 +7,6 @@ import org.bytedeco.opencv.global.opencv_imgcodecs;
 import org.bytedeco.opencv.opencv_core.Mat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -15,7 +14,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-@Component
 public class FrameUtils {
     private static final Logger logger = LoggerFactory.getLogger(FrameUtils.class);
     private static final Java2DFrameConverter frameConverter = new Java2DFrameConverter();

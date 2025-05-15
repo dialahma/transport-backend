@@ -30,7 +30,7 @@ opencv:
     yolo:
       confidence-threshold: 0.5
       nms-threshold: 0.4
-      vehicle-classes: 2,3,5,7  # IDs COCO pour les véhicules
+      vehicle-classes: [2,3,5,7]  # IDs COCO pour les véhicules
       mode: darknet # ou 'dnn' pour utiliser OpenCV DNN
 video:
   processing:
