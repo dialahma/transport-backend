@@ -1,15 +1,11 @@
 package net.adipappi.transport.api.controllers.video;
 
 import net.adipappi.transport.service.video.DetectionService;
-import net.adipappi.transport.video.service.ObjectDetectionService;
+import net.adipappi.transport.video.util.FrameUtils;
 import org.bytedeco.opencv.opencv_core.Mat;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -22,19 +18,15 @@ public class ObjectDetectionController {
     @Autowired
     private DetectionService detectionService;
 
-    @GetMapping(value = "/plate")
-    public String detectionObjects(@RequestParam("file") MultipartFile file) {
+    @PostMapping("/objects")
+    public ResponseEntity<String> detectObjects(@RequestParam("file") MultipartFile file) {
         try {
-            Mat image = convertToMat(file);
-            return detectionService.detectionObjects(image);
-        } catch (Exception e) {
-            return "Erreur : " + e.getMessage();
+            BufferedImage bufferedImage = ImageIO.read(file.getInputStream());
+            Mat image = FrameUtils.bufferedImageToMat(bufferedImage);
+            String result = detectionService.detectionObjects(image);
+            return ResponseEntity.ok(result);
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().body("Error processing image: " + e.getMessage());
         }
-    }
-
-
-    private Mat convertToMat(MultipartFile file) throws IOException {
-        BufferedImage bufferedImage = ImageIO.read(file.getInputStream());
-        return net.adipappi.transport.video.util.FrameUtils.bufferedImageToMat(bufferedImage);
     }
 }

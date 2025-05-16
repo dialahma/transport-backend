@@ -19,56 +19,44 @@ spring:
       ddl-auto: update
     show-sql: true
 
-logging:
-  level:
-    org.bytedeco: DEBUG
-    net.adipappi.transport.video: TRACE
 opencv:
   dnn:
-    backend: OPENCV
-    target: CPU
     yolo:
       confidence-threshold: 0.5
       nms-threshold: 0.4
-      vehicle-classes: [2,3,5,7]  # IDs COCO pour les véhicules
-      mode: darknet # ou 'dnn' pour utiliser OpenCV DNN
+      vehicle-classes: 
+        - 2  # car
+        - 3  # motorcycle
+        - 5  # bus
+        - 7  # truck
+      mode: darknet
+    backend: OPENCV
+    target: CPU
+
 video:
   processing:
-    timeout: 10000 # 10s timeout
+    timeout: 10000
     max-retries: 3
+    error-handling:
+      max-conceal-errors: 50
+      reset-interval: 60000
   storage:
     path: ../transport-video/src/main/resources/videos
     auto-create-dir: true
   hls:
-    output-dir: ../transport-video/target/hls  
+    output-dir: ../transport-video/target/hls
   ffmpeg:
     probesize: 10000000
     analyzeduration: 5000000
     timeout: 5000
   rtsp:
-    timeout: 5000 # 5s timeout
-    buffer-size: 524288 # 512KB buffer
+    timeout: 5000
+    buffer-size: 524288
     urls:
       - "rtsp://wesadmin:PiCaM*_*1187@adipappi.media:8554/picamv21"
       - "rtsp://wesadmin:PiCaM*_*1187@adipappi.media:8564/picamv21"
 
-geolocation:
-  api:
-    url: https://nominatim.openstreetmap.org
-
----
-spring:
-  config:
-    activate:
-      on-profile: dev
-
----
-spring:
-  config:
-    activate:
-      on-profile: prod
 logging:
   level:
-    root: WARN
-security:
-  enabled: true
+    org.bytedeco: DEBUG
+    net.adipappi.transport: TRACE

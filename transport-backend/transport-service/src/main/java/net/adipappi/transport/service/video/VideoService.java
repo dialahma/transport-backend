@@ -7,21 +7,20 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class VideoService {
-
     @Autowired
     private VideoProcessingService videoProcessingService;
     @Autowired
-    private VideoStreamService  videoStreamService;
+    private VideoStreamService videoStreamService;
 
     public void startVideoProcessing(String rtspUrl) {
         videoProcessingService.processRtspStream(rtspUrl);
     }
 
-    public void startStreaming(String rtspUrl, String streamName){
+    public void startStreaming(String rtspUrl, String streamName) {
         videoStreamService.startStreaming(rtspUrl, streamName);
     }
 
-    public void startHlsStreaming(String rtspUrl, String streamName){
+    public void startHlsStreaming(String rtspUrl, String streamName) {
         videoStreamService.startHlsStreaming(rtspUrl, streamName);
     }
 }

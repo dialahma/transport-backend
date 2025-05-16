@@ -54,7 +54,7 @@ public class VideoStorageService {
         System.out.println("✅ Enregistrement terminé : " + outputFile);
     }
 
-    private String generateFilePath(String rtspUrl) {
+    String generateFilePath(String rtspUrl) {
         Logger.getAnonymousLogger().info("RTSP URL " + rtspUrl);
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
         return OUTPUT_FOLDER + "recording_" + timestamp + ".mp4";

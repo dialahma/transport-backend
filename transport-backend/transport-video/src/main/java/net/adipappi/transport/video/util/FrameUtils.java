@@ -1,29 +1,25 @@
 package net.adipappi.transport.video.util;
 
-import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacv.Java2DFrameConverter;
+import org.bytedeco.javacv.OpenCVFrameConverter;
 import org.bytedeco.javacv.Frame;
-import org.bytedeco.opencv.global.opencv_imgcodecs;
 import org.bytedeco.opencv.opencv_core.Mat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import org.bytedeco.opencv.global.opencv_imgcodecs;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
+
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+
 
 public class FrameUtils {
-    private static final Logger logger = LoggerFactory.getLogger(FrameUtils.class);
     private static final Java2DFrameConverter frameConverter = new Java2DFrameConverter();
+    private static final OpenCVFrameConverter.ToMat matConverter = new OpenCVFrameConverter.ToMat();
 
     public static Mat frameToMat(Frame frame) {
         try {
-            BufferedImage image = frameConverter.convert(frame);
-            return bufferedImageToMat(image);
+            return matConverter.convert(frame);
         } catch (Exception e) {
-            logger.error("Frame to Mat conversion error", e);
+            System.err.println("Error converting frame to Mat: " + e.getMessage());
             return new Mat();
         }
     }
@@ -32,26 +28,19 @@ public class FrameUtils {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             ImageIO.write(bi, "jpg", baos);
             byte[] bytes = baos.toByteArray();
-            return opencv_imgcodecs.imdecode(new Mat(new BytePointer(bytes)),
-                    opencv_imgcodecs.IMREAD_COLOR);
+            return opencv_imgcodecs.imdecode(new Mat(bytes), opencv_imgcodecs.IMREAD_COLOR);
         } catch (Exception e) {
-            logger.error("BufferedImage to Mat conversion error", e);
+            System.err.println("Error converting BufferedImage to Mat: " + e.getMessage());
             return new Mat();
         }
     }
 
-    public static Frame matToFrame(Mat mat) throws IOException {
-        if (mat.empty()) {
-            throw new IOException("Cannot convert empty Mat to Frame");
+    public static Frame matToFrame(Mat mat) {
+        try {
+            return matConverter.convert(mat);
+        } catch (Exception e) {
+            System.err.println("Error converting Mat to Frame: " + e.getMessage());
+            return null;
         }
-
-        BytePointer bp = new BytePointer();
-        if (!opencv_imgcodecs.imencode(".jpg", mat, bp)) {
-            throw new IOException("Mat encoding failed");
-        }
-
-        byte[] bytes = new byte[(int)bp.limit()];
-        bp.get(bytes);
-        return frameConverter.convert(ImageIO.read(new ByteArrayInputStream(bytes)));
     }
 }
