@@ -24,11 +24,7 @@ opencv:
     yolo:
       confidence-threshold: 0.5
       nms-threshold: 0.4
-      vehicle-classes: 
-        - 2  # car
-        - 3  # motorcycle
-        - 5  # bus
-        - 7  # truck
+      vehicle-classes: [2, 3, 5, 7] #2: car, 3: moto, 5: bus, 7:track
       mode: darknet
     backend: OPENCV
     target: CPU
@@ -58,5 +54,6 @@ video:
 
 logging:
   level:
-    org.bytedeco: DEBUG
-    net.adipappi.transport: TRACE
+    org.bytedeco: INFO
+    net.adipappi.transport: DEBUG
+    

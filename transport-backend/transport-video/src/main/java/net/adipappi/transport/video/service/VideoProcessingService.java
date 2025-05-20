@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 public class VideoProcessingService {
@@ -25,32 +26,69 @@ public class VideoProcessingService {
 
     private final long processingTimeout;
 
+    private final AtomicBoolean isProcessing = new AtomicBoolean(false);
+
     public VideoProcessingService(@Value("${video.processing.timeout}") long processingTimeout) {
         this.processingTimeout = processingTimeout;
         this.executorService = Executors.newFixedThreadPool(2);
     }
 
     public void processRtspStream(String rtspUrl) {
-        executorService.submit(() -> {
-            try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(rtspUrl)) {
-                configureGrabber(grabber);
-                grabber.start();
+        if (isProcessing.compareAndSet(false, true)) {
+            executorService.submit(() -> {
+                try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(rtspUrl)) {
+                    // Ajout des logs de démarrage
+                    System.out.println("[VIDEO] Tentative de connexion au flux: " + rtspUrl);
 
-                String outputFile = videoStorageService.generateFilePath(rtspUrl);
-                try (FFmpegFrameRecorder recorder = new FFmpegFrameRecorder(
-                        outputFile,
-                        grabber.getImageWidth(),
-                        grabber.getImageHeight())) {
+                    configureGrabber(grabber);
+                    grabber.start();
 
-                    configureRecorder(recorder, grabber);
-                    recorder.start();
+                    System.out.println("[VIDEO] Flux connecté. Résolution: "
+                            + grabber.getImageWidth() + "x" + grabber.getImageHeight());
 
-                    processFrames(grabber, recorder);
+                    String outputFile = videoStorageService.generateFilePath(rtspUrl);
+                    try (FFmpegFrameRecorder recorder = new FFmpegFrameRecorder(
+                            outputFile,
+                            grabber.getImageWidth(),
+                            grabber.getImageHeight())) {
+
+                        System.out.println("[VIDEO] Enregistrement vers: " + outputFile);
+                        configureRecorder(recorder, grabber);
+                        recorder.start();
+
+                        processFrames(grabber, recorder);
+                        System.out.println("[VIDEO] Traitement terminé avec succès");
+                    }
+                } catch (Exception e) {
+                    System.err.println("[VIDEO] Erreur de traitement: " + e.getMessage());
+                    e.printStackTrace(); // Stacktrace complète pour le débogage
                 }
+            });
+        } else {
+            System.out.println("[VIDEO] Un traitement est déjà en cours");
+        }
+    }
+
+    private void processWithRetry(String rtspUrl, int maxRetries) {
+        int attempts = 0;
+        while (attempts < maxRetries) {
+            try {
+                processRtspStream(rtspUrl);
+                break;
             } catch (Exception e) {
-                System.err.println("Error processing RTSP stream: " + e.getMessage());
+                attempts++;
+                System.err.println("[VIDEO] Tentative " + attempts + "/" + maxRetries + " échouée");
+                if (attempts >= maxRetries) {
+                    System.err.println("[VIDEO] Abandon après " + maxRetries + " tentatives");
+                    throw e;
+                }
+                try {
+                    Thread.sleep(5000); // Attente avant reconnexion
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                }
             }
-        });
+        }
     }
 
     private void configureGrabber(FFmpegFrameGrabber grabber) {
@@ -66,14 +104,23 @@ public class VideoProcessingService {
     }
 
     private void processFrames(FFmpegFrameGrabber grabber, FFmpegFrameRecorder recorder) throws Exception {
+        System.out.println("[VIDEO] Démarrage du traitement des frames...");
         Frame frame;
+        int frameCount = 0;
+
         while ((frame = grabber.grab()) != null) {
             if (frame.image != null) {
+                frameCount++;
+                if (frameCount % 10 == 0) { // Log toutes les 10 frames
+                    System.out.printf("[VIDEO] Traitement frame #%d%n", frameCount);
+                }
+
                 Mat mat = FrameUtils.frameToMat(frame);
                 Mat processedMat = detectionService.detectAndAnnotate(mat);
                 Frame processedFrame = FrameUtils.matToFrame(processedMat);
                 recorder.record(processedFrame);
             }
         }
+        System.out.println("[VIDEO] Traitement terminé. Frames traitées: " + frameCount);
     }
 }
