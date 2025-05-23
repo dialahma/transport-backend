@@ -1,24 +1,24 @@
 package net.adipappi.transport.video.service;
 
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.bytedeco.javacpp.FloatPointer;
 import org.bytedeco.javacpp.IntPointer;
 import org.bytedeco.opencv.global.opencv_dnn;
 import org.bytedeco.opencv.opencv_core.*;
 import org.bytedeco.opencv.opencv_dnn.Net;
-import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.nio.FloatBuffer;
 import java.util.*;
-import java.util.Arrays;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
+
 
 import static org.bytedeco.opencv.global.opencv_core.*;
 import static org.bytedeco.opencv.global.opencv_imgproc.*;
 
+@Slf4j
 @Service
 public class ObjectDetectionService {
     private Net net;
@@ -36,9 +36,9 @@ public class ObjectDetectionService {
         try {
             loadModel();
             loadClassNames();
-            System.out.println("✅ YOLO model loaded successfully");
+            log.info("✅ YOLO model loaded successfully");
         } catch (Exception e) {
-            System.err.println("❌ Error loading YOLO model");
+            log.error("❌ Error loading YOLO model");
             throw new RuntimeException("Failed to initialize YOLO model", e);
         }
     }
@@ -47,9 +47,9 @@ public class ObjectDetectionService {
         File cfgFile = extractResourceToTempFile("yolo/yolov4.cfg");
         File weightsFile = extractResourceToTempFile("yolo/yolov4.weights");
 
-        System.out.println("Loading YOLO model from:");
-        System.out.println("Config: " + cfgFile.getAbsolutePath());
-        System.out.println("Weights: " + weightsFile.getAbsolutePath());
+        log.info("Loading YOLO model from:");
+        log.info("Config: {}", cfgFile.getAbsolutePath());
+        log.info("Weights: {}", weightsFile.getAbsolutePath());
 
         this.net = opencv_dnn.readNetFromDarknet(cfgFile.getAbsolutePath(), weightsFile.getAbsolutePath());
         if (net.empty()) {
@@ -61,21 +61,23 @@ public class ObjectDetectionService {
 
     private void loadClassNames() throws IOException {
         this.classNames = new ArrayList<>();
-        try (InputStream in = getClass().getResourceAsStream("/yolo/coco.names");
-             BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                classNames.add(line.trim());
+        try (InputStream in = getClass().getResourceAsStream("/yolo/coco.names")) {
+            assert in != null;
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    classNames.add(line.trim());
+                }
             }
         }
     }
 
     @PostConstruct
     public void verifyConfiguration() {
-        System.out.println("YOLO Configuration:");
-        System.out.println("- Vehicle classes: " + vehicleClasses);
-        System.out.println("- Confidence threshold: " + CONFIDENCE_THRESHOLD);
-        System.out.println("- NMS threshold: " + NMS_THRESHOLD);
+        log.info("YOLO Configuration:");
+        log.info("- Vehicle classes: {}", vehicleClasses);
+        log.info("- Confidence threshold: {}", CONFIDENCE_THRESHOLD);
+        log.info("- NMS threshold: {}", NMS_THRESHOLD);
 
         // Vérification des fichiers YOLO
         try {
@@ -83,16 +85,16 @@ public class ObjectDetectionService {
             InputStream weights = getClass().getResourceAsStream("/yolo/yolov4.weights");
             InputStream names = getClass().getResourceAsStream("/yolo/coco.names");
 
-            System.out.println("YOLO files existence:");
-            System.out.println("- cfg: " + (cfg != null));
-            System.out.println("- weights: " + (weights != null));
-            System.out.println("- names: " + (names != null));
+            log.info("YOLO files existence:");
+            log.info("- cfg: {}", cfg != null);
+            log.info("- weights: {}", weights != null);
+            log.info("- names: {}", names != null);
 
             if (cfg != null) cfg.close();
             if (weights != null) weights.close();
             if (names != null) names.close();
         } catch (Exception e) {
-            System.err.println("Error checking YOLO files: " + e.getMessage());
+            log.error("Error checking YOLO files: {}", e.getMessage());
         }
     }
 
@@ -235,9 +237,9 @@ public class ObjectDetectionService {
         try {
             net.close();
             loadModel();
-            System.out.println("YOLO network reset");
+            log.info("YOLO network reset");
         } catch (Exception e) {
-            System.err.println("Network reset failed: " + e.getMessage());
+            log.error("Network reset failed: {}", e.getMessage());
         }
     }
 
@@ -249,7 +251,9 @@ public class ObjectDetectionService {
             try (OutputStream out = new FileOutputStream(tempFile)) {
                 byte[] buffer = new byte[8192];
                 int bytesRead;
-                while ((bytesRead = in.read(buffer)) != -1) {
+                while (true) {
+                    assert in != null;
+                    if ((bytesRead = in.read(buffer)) == -1) break;
                     out.write(buffer, 0, bytesRead);
                 }
             }

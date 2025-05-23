@@ -6,6 +6,8 @@ import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.FFmpegFrameRecorder;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.opencv.opencv_core.Mat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class VideoProcessingService {
     private final ExecutorService executorService;
 
+    private static final Logger logger = LoggerFactory.getLogger(VideoProcessingService.class);
+
     @Autowired
     private VideoStorageService videoStorageService;
 
@@ -26,10 +30,12 @@ public class VideoProcessingService {
 
     private final long processingTimeout;
 
+
     private final AtomicBoolean isProcessing = new AtomicBoolean(false);
 
     public VideoProcessingService(@Value("${video.processing.timeout}") long processingTimeout) {
         this.processingTimeout = processingTimeout;
+
         this.executorService = Executors.newFixedThreadPool(2);
     }
 
@@ -68,7 +74,7 @@ public class VideoProcessingService {
             System.out.println("[VIDEO] Un traitement est déjà en cours");
         }
     }
-
+   /*
     private void processWithRetry(String rtspUrl, int maxRetries) {
         int attempts = 0;
         while (attempts < maxRetries) {
@@ -90,7 +96,7 @@ public class VideoProcessingService {
             }
         }
     }
-
+*/
     private void configureGrabber(FFmpegFrameGrabber grabber) {
         grabber.setOption("rtsp_transport", "tcp");
         grabber.setOption("stimeout", String.valueOf(processingTimeout));
@@ -104,23 +110,28 @@ public class VideoProcessingService {
     }
 
     private void processFrames(FFmpegFrameGrabber grabber, FFmpegFrameRecorder recorder) throws Exception {
-        System.out.println("[VIDEO] Démarrage du traitement des frames...");
+        logger.info("[VIDEO] Démarrage du traitement des frames...");
         Frame frame;
         int frameCount = 0;
 
         while ((frame = grabber.grab()) != null) {
-            if (frame.image != null) {
-                frameCount++;
-                if (frameCount % 10 == 0) { // Log toutes les 10 frames
-                    System.out.printf("[VIDEO] Traitement frame #%d%n", frameCount);
-                }
+            frameCount++;
+            if (frameCount % 10 == 0) { // Log toutes les 10 frames
+                logger.debug("Traitement frame #{}", frameCount);
+            }
 
+            if (frame.image != null) {
                 Mat mat = FrameUtils.frameToMat(frame);
                 Mat processedMat = detectionService.detectAndAnnotate(mat);
                 Frame processedFrame = FrameUtils.matToFrame(processedMat);
+                if (frameCount % 30 == 0) { // Log tous les 30 frames
+                    logger.info("Détection frame {} - Résolution: {}x{}",
+                            frameCount, processedMat.cols(), processedMat.rows());
+                }
+
                 recorder.record(processedFrame);
             }
         }
-        System.out.println("[VIDEO] Traitement terminé. Frames traitées: " + frameCount);
+        logger.info("Traitement terminé. {} frames traitées", frameCount);
     }
 }
