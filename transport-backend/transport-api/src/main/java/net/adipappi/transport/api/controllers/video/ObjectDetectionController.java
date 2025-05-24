@@ -2,6 +2,7 @@ package net.adipappi.transport.api.controllers.video;
 
 import net.adipappi.transport.service.video.DetectionService;
 import net.adipappi.transport.video.util.FrameUtils;
+import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.opencv.opencv_core.Mat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,9 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
 import java.io.IOException;
+import java.util.List;
+
+import static org.bytedeco.opencv.global.opencv_imgcodecs.*;
 
 @RestController
 @RequestMapping("/api/detection")
@@ -71,5 +75,23 @@ public class ObjectDetectionController {
             return ResponseEntity.internalServerError()
                     .body(("Error: " + e.getMessage()).getBytes());
         }
+    }
+
+    @PostMapping("/{type}")
+    public ResponseEntity<byte[]> detect(@PathVariable String type,
+                                         @RequestBody byte[] imageBytes) {
+        Mat input = imdecode(new Mat(new BytePointer(imageBytes)), IMREAD_COLOR);
+        Mat result = detectionService.detect(type, input);
+
+        BytePointer buffer = new BytePointer();
+        imencode(".jpg", result, buffer);
+        byte[] resultBytes = new byte[(int) buffer.limit()];
+        buffer.get(resultBytes);
+        return ResponseEntity.ok().body(resultBytes);
+    }
+
+    @GetMapping("/types")
+    public List<String> available() {
+        return detectionService.available();
     }
 }

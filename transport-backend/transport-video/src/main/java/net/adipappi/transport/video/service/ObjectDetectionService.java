@@ -20,7 +20,7 @@ import static org.bytedeco.opencv.global.opencv_imgproc.*;
 
 @Slf4j
 @Service
-public class ObjectDetectionService {
+public class ObjectDetectionService implements VideoDetectionService {
     private Net net;
     private List<String> classNames;
     private final float CONFIDENCE_THRESHOLD;
@@ -97,8 +97,17 @@ public class ObjectDetectionService {
             log.error("Error checking YOLO files: {}", e.getMessage());
         }
     }
+    @Override
+    public String getName() {
+        return "vehicle";
+    }
 
-    public Mat detectAndAnnotate(Mat image) {
+    @Override
+    public Mat detectAndAnnotate(Mat frame) {
+        return this.detectAndAnnotateInternal(frame);
+    }
+
+    private Mat detectAndAnnotateInternal(Mat image) {
         if (net.empty() || image.empty()) {
             return image.clone();
         }

@@ -1,9 +1,9 @@
-package net.adipappi.transport.video.service;
+package net.adipappi.transport.video.batch;
 
 import jakarta.annotation.PreDestroy;
+import net.adipappi.transport.video.service.ObjectDetectionService;
 import net.adipappi.transport.video.util.FrameUtils;
 import org.bytedeco.ffmpeg.global.avcodec;
-import org.bytedeco.ffmpeg.global.avutil;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.FFmpegFrameRecorder;
 import org.bytedeco.javacv.Frame;
